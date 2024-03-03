@@ -69,19 +69,19 @@ def compute_similarity(query_idx, embeddings, use_cosine=True):
     query_embedding = embeddings[query_idx]
     for idx, emb in enumerate(embeddings):
         if idx == query_idx:
-            # 跳过查询嵌入本身
+            # Skip query embedding itself
             continue
 
         if use_cosine:
-            # 使用余弦相似度
+            # Use cosine similarity
             sim = cosine_similarity(query_embedding.reshape(1, -1), emb.reshape(1, -1))[0][0]
         else:
-            # 使用点积相似度，假设向量已经规范化
+            # Use dot product similarity, assuming vectors are normalised
             query_emb_norm = query_embedding / np.linalg.norm(query_embedding)
             emb_norm = emb / np.linalg.norm(emb)
             sim = np.dot(query_emb_norm, emb_norm)
         similarities.append((idx, sim))
-    # 根据相似性排序并返回前10个最相似的音频文件的索引
+    # Sort by similarity and return an index of the top 10 most similar audio files
     return sorted(similarities, key=lambda x: x[1], reverse=True)[:10]
 
 

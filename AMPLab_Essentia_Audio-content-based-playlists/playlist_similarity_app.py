@@ -2,36 +2,36 @@ import streamlit as st
 from app.app_backend import load_embedding_from_pickle, compute_similarity, load_audio_paths
 import numpy as np
 
-# 加载嵌入数据和音频路径
+# Load embedded data and audio paths
 discogs_embeddings = load_embedding_from_pickle('embedding/discogs.pkl', average_embeddings=True)
 musiccnn_embeddings = load_embedding_from_pickle('embedding/musiccnn.pkl', average_embeddings=True)
-audio_paths = load_audio_paths('embedding/embed_indexes.txt')  # 确保此函数已正确定义
+audio_paths = load_audio_paths('embedding/embed_indexes.txt')  # Make sure this function is properly defined
 
 # Streamlit UI
 st.title('Music Similarity Demo')
 
-# 用户选择查询曲目，展示音频路径名称
+# User selects a query track and displays the audio path name
 track_options = {idx: path for idx, path in enumerate(audio_paths)}
 track_index = st.selectbox('Select a query track', list(track_options.keys()), format_func=lambda x: track_options[x])
 
-# 显示查询曲目和计算两种嵌入的最相似曲目
+# Display the query track and calculate the most similar track for both embeds
 if track_index is not None:
-    # 获取最相似的曲目
+    # Get the most similar tracks
     similar_tracks_discogs = compute_similarity(track_index, discogs_embeddings, use_cosine=True) # Otherwise dot-product
     similar_tracks_musiccnn = compute_similarity(track_index, musiccnn_embeddings, use_cosine=True)
 
     st.header('Query Track')
-    st.write(audio_paths[track_index])  # 展示查询曲目的路径名称
-    st.audio(audio_paths[track_index])  # 展示查询曲目的音频播放器
+    st.write(audio_paths[track_index])  # Display the path name of the query track
+    st.audio(audio_paths[track_index])  # Audio player displaying query tracks
 
-    # 展示Discogs-Effnet嵌入的最相似曲目
+    # Showing the most similar tracks to Discogs-Effnet Embedded
     st.header('Most similar tracks using Discogs-Effnet embeddings:')
     for idx, _ in similar_tracks_discogs:
-        st.write(audio_paths[idx])  # 展示相似曲目的路径名称
-        st.audio(audio_paths[idx])  # 嵌入音频播放器
+        st.write(audio_paths[idx])  # Display path names of similar tracks
+        st.audio(audio_paths[idx])  # Embedd Audio Player
 
-    # 展示MSD-MusicCNN嵌入的最相似曲目
+    # Demonstrate the most similar tracks embedded by MSD-MusicCNN
     st.header('Most similar tracks using MSD-MusicCNN embeddings:')
     for idx, _ in similar_tracks_musiccnn:
-        st.write(audio_paths[idx])  # 展示相似曲目的路径名称
-        st.audio(audio_paths[idx])  # 嵌入音频播放器
+        st.write(audio_paths[idx])  # Show path names of similar tracks
+        st.audio(audio_paths[idx])  # Embed the audio player
