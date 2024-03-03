@@ -58,8 +58,3 @@ def save_features(features, filename):
     """
     with open(filename, 'w') as f:
         json.dump(features, f, indent=4)
-
-
-# TODO
-def load_features(filename):
-    pass
